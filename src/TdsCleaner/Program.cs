@@ -1,21 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.IO;
-using System.Xml.Linq;
-using System.Text.RegularExpressions;
 
 namespace TdsCleaner
 {
-    class Program
+    internal class Program
     {
         public static Options Options { get; set; }
 
-        public static Project Project { get; set; }
+        public static TdsProject Project { get; set; }
 
-
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             Options = new Options();
             if (!CommandLine.Parser.Default.ParseArguments(args, Options))
@@ -41,11 +35,13 @@ namespace TdsCleaner
                 File.Delete(Options.OutputProjectFile);
             }
 
-            Project = new Project();
+            Project = new TdsProject();
             ProjectLoader.Process(Options, Project);
             ProjectCleaner.Process(Options, Project);
             ProjectSorter.Process(Options, Project);
             ProjectWriter.Process(Options, Project);
+
+            Console.ReadKey(true);
         }
 
         private static void PrintUsage(bool outputUsage)

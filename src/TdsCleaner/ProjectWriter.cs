@@ -4,8 +4,10 @@ namespace TdsCleaner
 {
     public static class ProjectWriter
     {
-        public static void Process(Options options, Project project)
+        public static void Process(Options options, TdsProject project)
         {
+            Log.Info("ProjectWriter", "{0} items in project.", project.Items.Count);
+
             if (!options.TestRun)
             {
                 project.Document.Save(options.OutputProjectFile);

@@ -1,28 +1,17 @@
-﻿using System.Globalization;
-using System.Text.RegularExpressions;
+﻿using System.IO;
 using System.Xml.Linq;
 
 namespace TdsCleaner
 {
     public static class ProjectLoader
     {
-        public static void Process(Options options, Project project)
+        public static void Process(Options options, TdsProject project)
         {
             project.Document = XDocument.Load(options.InputProjectFile);
+            project.BaseDirectory = Path.GetDirectoryName(options.InputProjectFile);
+            project.BaseItemDirectory = Path.Combine(project.BaseDirectory, "sitecore");
 
-            foreach (var itemNode in project.ItemNodes)
-            {
-                var path = Project.Decode(itemNode.Attribute("Include").Value);
-                if (!project.Items.Contains(path))
-                {
-                    project.Items.Add(path);
-                }
-                else
-                {
-                    itemNode.Remove();
-                    Log.Info("ProjectLoader", "Removed duplicate item '{0}'", path);
-                }
-            }
+            Log.Info("ProjectLoader", "{0} items in project.", project.Items.Count);
         }
     }
 }

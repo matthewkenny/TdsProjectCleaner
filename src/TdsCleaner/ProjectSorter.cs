@@ -6,11 +6,11 @@ namespace TdsCleaner
 {
     public static class ProjectSorter
     {
-        public static void Process(Options options, Project project)
+        public static void Process(Options options, TdsProject project)
         {
             project.ItemRoot.ReplaceWith(Reorder(project.ItemRoot));
         }
-        
+
         private static XElement Reorder(XElement root)
         {
             return new XElement(root.Name,

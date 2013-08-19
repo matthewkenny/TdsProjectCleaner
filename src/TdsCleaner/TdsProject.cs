@@ -7,12 +7,16 @@ using System.Xml.Linq;
 
 namespace TdsCleaner
 {
-    public class Project
+    public class TdsProject
     {
         public static class Namespaces
         {
             public static string MsBuild { get { return "{http://schemas.microsoft.com/developer/msbuild/2003}"; } }
         }
+
+        public string BaseDirectory { get; set; }
+
+        public string BaseItemDirectory { get; set; }
 
         public List<string> DirectoriesToBeDeleted { get; private set; }
 
@@ -20,11 +24,22 @@ namespace TdsCleaner
 
         public List<string> FilesToBeDeleted { get; private set; }
 
-        public HashSet<string> Items { get; set; }
-
-        public IEnumerable<XElement> ItemNodes
+        public IList<TdsItem> Items
         {
-            get { return ItemRoot.Elements(Namespaces.MsBuild + "SitecoreItem"); }
+            get
+            {
+                if (_items == null)
+                {
+                    _items = ItemRoot.Elements(Namespaces.MsBuild + "SitecoreItem").Select(xml => new TdsItem(this, xml)).ToList();
+                }
+
+                return _items;
+            }
+
+            set
+            {
+                _items = value;
+            }
         }
 
         public XElement ItemRoot
@@ -42,9 +57,10 @@ namespace TdsCleaner
             }
         }
 
-        public Project()
+        private IList<TdsItem> _items;
+
+        public TdsProject()
         {
-            Items = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
             FilesToBeDeleted = new List<string>();
             DirectoriesToBeDeleted = new List<string>();
         }
