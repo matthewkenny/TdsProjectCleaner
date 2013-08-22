@@ -15,7 +15,7 @@ namespace TdsCleaner
         {
             ItemNode = itemNode;
             ProjectPath = ItemNode.Attribute("Include").Value;
-            FilePath = Path.Combine(project.BaseDirectory, ProjectPath);
+            FilePath = Path.Combine(project.BaseDirectory, TdsUtil.DecodePath(ProjectPath));
         }
     }
 }
